@@ -23,6 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace DotNetCasClient.Validation.Schema.Cas20
@@ -36,12 +37,20 @@ namespace DotNetCasClient.Validation.Schema.Cas20
     {
         internal ServiceResponse() { }
 
+        /// <summary>
+        /// I don't know who wrote this service response deserialization class, but it's too strict. While the server lets changing response namespace and adding attributes,
+        /// why would anyone expect a strict response schema?  
+        /// </summary>
+        /// <param name="responseXml"></param>
+        /// <returns></returns>
         public static ServiceResponse ParseResponse(string responseXml)
         {
+            responseXml = Regex.Replace(responseXml, "<cas:attributes>[\\s\\S]*?</cas:attributes>", "");
+            responseXml = Regex.Replace(responseXml, "xmlns:cas='.*?'", "xmlns:cas='http://www.yale.edu/tp/cas'");
             XmlSerializer xs = new XmlSerializer(typeof(ServiceResponse));
             using (StringReader sr = new StringReader(responseXml))
             {
-                return (ServiceResponse) xs.Deserialize(sr);
+                return (ServiceResponse)xs.Deserialize(sr);
             }
         }
 

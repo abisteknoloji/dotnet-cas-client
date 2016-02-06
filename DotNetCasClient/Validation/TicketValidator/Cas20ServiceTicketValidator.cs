@@ -100,11 +100,11 @@ namespace DotNetCasClient.Validation.TicketValidator
             {
                 serviceResponse = ServiceResponse.ParseResponse(response);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                throw new TicketValidationException("CAS Server response does not conform to CAS 2.0 schema");
+                throw new TicketValidationException("CAS Server response does not conform to CAS 2.0 schema", ex);
             }
-            
+
             if (serviceResponse.IsAuthenticationSuccess)
             {
                 AuthenticationSuccess authSuccessResponse = (AuthenticationSuccess)serviceResponse.Item;
@@ -119,25 +119,25 @@ namespace DotNetCasClient.Validation.TicketValidator
                 if (CasAuthentication.ProxyTicketManager != null && !string.IsNullOrEmpty(proxyGrantingTicketIou))
                 {
                     string proxyGrantingTicket = CasAuthentication.ProxyTicketManager.GetProxyGrantingTicket(proxyGrantingTicketIou);
-                    if ( proxyGrantingTicket != null )
-                        CasAuthentication.ProxyTicketManager.InsertProxyGrantingTicketMapping( proxyGrantingTicketIou, proxyGrantingTicket );
+                    if (proxyGrantingTicket != null)
+                        CasAuthentication.ProxyTicketManager.InsertProxyGrantingTicketMapping(proxyGrantingTicketIou, proxyGrantingTicket);
                 }
 
                 if (authSuccessResponse.Proxies != null && authSuccessResponse.Proxies.Length > 0)
                 {
                     return new CasPrincipal(new Assertion(authSuccessResponse.User), proxyGrantingTicketIou, authSuccessResponse.Proxies);
-                } 
+                }
                 else
                 {
                     return new CasPrincipal(new Assertion(authSuccessResponse.User), proxyGrantingTicketIou);
                 }
             }
-            
+
             if (serviceResponse.IsAuthenticationFailure)
             {
                 try
                 {
-                    AuthenticationFailure authFailureResponse = (AuthenticationFailure) serviceResponse.Item;
+                    AuthenticationFailure authFailureResponse = (AuthenticationFailure)serviceResponse.Item;
                     throw new TicketValidationException(authFailureResponse.Message, authFailureResponse.Code);
                 }
                 catch
@@ -145,7 +145,7 @@ namespace DotNetCasClient.Validation.TicketValidator
                     throw new TicketValidationException("CAS ticket could not be validated.");
                 }
             }
-            
+
             if (serviceResponse.IsProxySuccess)
             {
                 throw new TicketValidationException("Unexpected service validate response: ProxySuccess");
