@@ -215,11 +215,11 @@ namespace DotNetCasClient
                     logger.Info("  Redirecting to CAS Login Page (Unauthorized without NotAuthorizedUrl defined)");
                     CasAuthentication.RedirectToLoginPage(true);
                 }
-                else if (RequestEvaluator.GetRequestIsUnAuthenticated())
-                {
-                    logger.Info("  Redirecting to CAS Login Page");
-                    CasAuthentication.RedirectToLoginPage();
-                }
+                //else if (RequestEvaluator.GetRequestIsUnAuthenticated())
+                //{
+                //    logger.Info("  Redirecting to CAS Login Page");
+                //    CasAuthentication.RedirectToLoginPage();
+                //}
 
                 logger.Debug("Ending EndRequest for " + request.RawUrl);
             }

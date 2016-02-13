@@ -601,7 +601,7 @@ namespace DotNetCasClient
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
 
-            if (RequestEvaluator.GetRequestHasGatewayParameter())
+            if (RequestEvaluator.GetRequestHasGatewayParameter() || RequestEvaluator.GetRequestHasCasTicket())
             {
                 // TODO: Only set Success if request is authenticated?  Otherwise Failure.  
                 // Doesn't make a difference from a security perspective, but may be clearer for users

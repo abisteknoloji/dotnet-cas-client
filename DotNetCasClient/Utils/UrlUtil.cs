@@ -53,7 +53,7 @@ namespace DotNetCasClient.Utils
             CasAuthentication.Initialize();
 
             EnhancedUriBuilder ub = new EnhancedUriBuilder(CasAuthentication.FormsLoginUrl);
-            ub.QueryItems.Set(CasAuthentication.TicketValidator.ServiceParameterName, HttpUtility.UrlEncode(ConstructServiceUrl(gateway)));
+            ub.QueryItems.Set(CasAuthentication.TicketValidator.ServiceParameterName, HttpUtility.UrlEncode(ConstructServiceUrl(false)));
 
             if (renew)
             {
